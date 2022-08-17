@@ -1,5 +1,9 @@
 FROM node:16-alpine
-WORKDIR /app
+
+WORKDIR /app-backend
+
 COPY . .
+
 RUN npm install
-CMD "npm", "start" 
+
+CMD [ "npm", "start" ]
