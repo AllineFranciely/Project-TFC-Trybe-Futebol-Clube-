@@ -9,11 +9,13 @@ const options: object = {
   expiresIn: '10d',
 };
 
+// Solução para requisito 3 visto durante monitoria
+
 export default class LoginService {
   public login = async (email: string, password: string) => {
     const user = await UsersModel.findOne({ where: { email } });
 
-    if (user === null) {
+    if (user === null || !password) {
       return { statusCode: 400, result: { message: 'All fields must be filled' } };
     }
 
