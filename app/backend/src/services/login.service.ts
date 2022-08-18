@@ -1,26 +1,35 @@
-// import * as bcryptjs from 'bcryptjs';
-// import * as jwt, { SignOptions } from 'jsonwebtoken';
-// import UserModel from '../database/models/Users';
-// const { JWT_SECRET } = process.nextTick;
+import * as bcryptjs from 'bcryptjs';
+import * as jwt from 'jsonwebtoken';
+import UsersModel from '../database/models/Users';
 
-// const options: SignOptions = {
-//   algorithm: 'HS256',
-//   expiresIn: '10d',
-// };
+const secret = process.env.JWT_SECRET || 'jwt_secret';
 
-// export default class LoginService {
-//   public login = async (email: string, password: string) => {
-//     const user = await UserModel.findOne({ where: { email, password } });
+const options: object = {
+  algorithm: 'HS256',
+  expiresIn: '10d',
+};
 
-//     if (!user) {
-//       return { statusCode: 400, result: { message: 'All fields must be filled' } };
-//     }
+export default class LoginService {
+  public login = async (email: string, password: string) => {
+    const user = await UsersModel.findOne({ where: { email, password } });
 
-//     const token = bcryptjs.compareSync(password, user.password);
+    if (user === null) {
+      return { statusCode: 400, result: { message: 'All fields must be filled' } };
+    }
 
-//     if(!token) {
-//       return { statusCode: 401, resuot: { message: 'Incorrect email or password' } }
-//     }
-//     return user;
-//   };
-// }
+    const enterPassword = bcryptjs.compareSync(password, user.password);
+
+    if (!enterPassword) {
+      return { statusCode: 401, result: { message: 'Incorrect email or password' } };
+    }
+
+    const payload = {
+      email,
+      id: user.id,
+    };
+
+    const token = jwt.sign(payload, secret, options);
+
+    return { statusCode: 200, result: { token } };
+  };
+}
