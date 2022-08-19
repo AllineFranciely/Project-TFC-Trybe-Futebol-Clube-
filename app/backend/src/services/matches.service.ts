@@ -22,7 +22,7 @@ class MatchesService {
   }));
 
   static getByQuery = async (query: string) => {
-    const inProgress = query === 'true' ? 1 : 0;
+    const inProgress = query === 'true';
     return Matches.findAll({
       where: { inProgress },
       include: [
@@ -41,13 +41,13 @@ class MatchesService {
   };
 
   static createMatch = async (requestBody: CreateMatch) => {
-    const { homeTeam, awayTeam, homeTeamGoals, awayTeamGoals, inProgress } = requestBody;
+    const { homeTeam, awayTeam, homeTeamGoals, awayTeamGoals } = requestBody;
     return Matches.create({
       homeTeam,
       awayTeam,
       homeTeamGoals,
       awayTeamGoals,
-      inProgress,
+      inProgress: true,
     });
   };
 
