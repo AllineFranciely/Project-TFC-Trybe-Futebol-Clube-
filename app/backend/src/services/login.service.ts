@@ -1,37 +1,19 @@
-import * as bcryptjs from 'bcryptjs';
-import * as jwt from 'jsonwebtoken';
-import UsersModel from '../database/models/Users';
+import Login from '../interfaces/LoginInterfaces';
+import Users from '../database/models/Users';
+import { tokenGenerate } from '../middlewares/tokenValidation';
 
-const secret = process.env.JWT_SECRET || 'jwt_secret';
+const userService = async (payload: Login) => {
+  const login = await Users.findOne({ where: { email: payload.email } });
 
-const options: object = {
-  algorithm: 'HS256',
-  expiresIn: '10d',
+  if (!login) throw new Error('usuário não encontrado');
+
+  const { id, username, role, email } = login;
+
+  const token = await tokenGenerate({ id, username, role, email });
+
+  return {
+    token,
+  };
 };
 
-// Solução para requisito 3 visto durante monitoria
-
-export default class LoginService {
-  public login = async (email: string, password: string) => {
-    const user = await UsersModel.findOne({ where: { email } });
-
-    if (user === null || !password) {
-      return { statusCode: 400, result: { message: 'All fields must be filled' } };
-    }
-
-    const enterPassword = bcryptjs.compareSync(password, user.password);
-
-    if (!enterPassword) {
-      return { statusCode: 401, result: { message: 'Incorrect email or password' } };
-    }
-
-    const payload = {
-      email,
-      id: user.id,
-    };
-
-    const token = jwt.sign(payload, secret, options);
-
-    return { statusCode: 200, result: { token } };
-  };
-}
+export default userService;
