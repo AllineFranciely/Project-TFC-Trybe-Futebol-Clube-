@@ -1,3 +1,5 @@
+import CreateMatch from '../interfaces/CreateMatchInterface';
+import EditMatch from '../interfaces/EditMatcjInterface';
 import Matches from '../database/models/Matches';
 import Teams from '../database/models/Teams';
 
@@ -36,6 +38,25 @@ class MatchesService {
         },
       ],
     });
+  };
+
+  static createMatch = async (requestBody: CreateMatch) => {
+    const { homeTeam, awayTeam, homeTeamGoals, awayTeamGoals, inProgress } = requestBody;
+    return Matches.create({
+      homeTeam,
+      awayTeam,
+      homeTeamGoals,
+      awayTeamGoals,
+      inProgress,
+    });
+  };
+
+  static editMatch = async ({ id, homeTeamGoals, awayTeamGoals }: EditMatch) => {
+    await Matches.update({ homeTeamGoals, awayTeamGoals }, { where: { id } });
+  };
+
+  static finishMatch = async (id: string) => {
+    await Matches.update({ inProgress: false }, { where: { id } });
   };
 }
 

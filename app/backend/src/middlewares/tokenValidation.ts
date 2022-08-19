@@ -6,7 +6,7 @@ const secret = 'jwt_secret';
 
 const tokenGenerate = async (payload: User) => {
   const token = jwt.sign(payload, secret, {
-    expiresIn: '2d',
+    expiresIn: '10d',
     algorithm: 'HS256',
   });
   return token;
