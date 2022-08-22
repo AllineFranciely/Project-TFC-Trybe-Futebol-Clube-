@@ -52,7 +52,7 @@ class MatchesController {
     try {
       const { id } = req.params;
       await Matches.finishMatch(id);
-      return res.status(200).json({ message: 'Updated progress' });
+      return res.status(200).json({ message: 'Finished' });
     } catch (error) {
       next(error);
     }
