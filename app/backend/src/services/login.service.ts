@@ -5,15 +5,13 @@ import { tokenGenerate } from '../middlewares/tokenValidation';
 const userService = async (payload: Login) => {
   const login = await Users.findOne({ where: { email: payload.email } });
 
-  if (!login) throw new Error('usuário não encontrado');
+  if (!login) return null;
 
-  const { id, username, role, email } = login;
+  const { id, username, email, role } = login;
 
-  const token = await tokenGenerate({ id, username, role, email });
+  const token = await tokenGenerate({ id, username, email, role });
 
-  return {
-    token,
-  };
+  return token;
 };
 
 export default userService;

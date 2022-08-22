@@ -22,7 +22,7 @@ class MatchesService {
   }));
 
   static getByQuery = async (query: string) => {
-    const inProgress = query === 'true';
+    const inProgress = query === 'true' ? 1 : 0;
     return Matches.findAll({
       where: { inProgress },
       include: [
