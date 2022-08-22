@@ -1,25 +1,16 @@
 import * as jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-import User from '../interfaces/UserInterface';
 
 const secret = 'jwt_secret';
 
-const tokenGenerate = async (payload: User) => {
-  const token = jwt.sign(payload, secret, {
-    expiresIn: '10d',
-    algorithm: 'HS256',
-  });
-  return token;
-};
-
 const tokenValidation = async (req: Request, res: Response, next: NextFunction) => {
+  const token = req.headers.authorization;
+
+  if (!token) {
+    return res.status(401).json({ message: 'Token not found' });
+  }
+
   try {
-    const token = req.headers.authorization;
-
-    if (!token) {
-      return res.status(401).json({ message: 'Token not found' });
-    }
-
     const decode = jwt.verify(token, secret) as jwt.JwtPayload;
 
     req.body.user = decode;
@@ -30,7 +21,4 @@ const tokenValidation = async (req: Request, res: Response, next: NextFunction) 
   }
 };
 
-export {
-  tokenGenerate,
-  tokenValidation,
-};
+export default tokenValidation;

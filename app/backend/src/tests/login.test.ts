@@ -41,12 +41,12 @@ describe('Testando a rota /login', () => {
         .send(obj);
       expect(response).to.have.status(400);
     })
-    it('retorna erro 400 ao passar email errado', async () => {
+    it('retorna erro 401 ao passar email errado', async () => {
       obj.email = 'email@errado.com';
       const response = await chai.request(app)
         .post('/login')
         .send(obj);
-      expect(response).to.have.status(400);
+      expect(response).to.have.status(401);
     })
     it('retorna erro 401 se passar email inválido', async () => {
       obj.email = 'email';

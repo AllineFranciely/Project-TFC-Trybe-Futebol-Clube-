@@ -1,15 +1,21 @@
 import { Request, Response } from 'express';
-import loginService from '../services/login.service';
+import LoginService from '../services/login.service';
 
 class LoginController {
-  public login = async (req: Request, res: Response) => {
-    const user = await loginService(req.body);
+  constructor(private loginService = new LoginService()) {}
 
-    return res.status(200).json({ token: user });
+  public login = async (req: Request, res: Response) => {
+    const { email, password } = req.body;
+
+    const { statusCode, result } = await this.loginService.login(email, password);
+
+    return res.status(statusCode).json(result);
   };
 
-  public role = (req: Request, res: Response) => {
-    res.status(200).json({ role: req.body.user.role });
+  public role = async (_req: Request, res: Response) => {
+    const { role } = res.locals.user;
+
+    return res.status(200).json({ role });
   };
 }
 

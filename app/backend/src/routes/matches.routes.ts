@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import MatchesController from '../controllers/matches.controller';
-import { tokenValidation } from '../middlewares/tokenValidation';
+import tokenValidation from '../middlewares/tokenValidation';
 
 const router = Router();
 const matchesController = new MatchesController();
