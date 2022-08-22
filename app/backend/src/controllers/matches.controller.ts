@@ -5,7 +5,7 @@ class MatchesController {
   public getAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { inProgress } = req.query;
-      console.log(inProgress);
+      // console.log(inProgress);
       if (inProgress) {
         return res.status(200).json(await Matches.getByQuery(inProgress as string));
       }
